@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://zhtj.youth.cn/zhtj/*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      zx108wl
 // @description 2023/10/3 20:16:27
 // @require    https://cdn.staticfile.org/jszip/3.5.0/jszip.min.js
