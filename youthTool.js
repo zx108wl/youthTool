@@ -13,21 +13,24 @@
 (function () {
     'use strict'
 
-    creatButtonDownload();
-
+    let creatFlag = true;
     setInterval(() => {
         const url = window.location.href;
         if (url === 'https://zhtj.youth.cn/zhtj/center/tuanyuantw/memberlist') {
-            document.getElementById('batch-download').style.display = 'block';
+            if(creatFlag == true){
+                creatFlag = false;
+                creatButtonDownload();
+            }
         } else {
-            document.getElementById('batch-download').style.display = 'none';
+            //creatButtonDownload();
+            creatFlag = true;
         }
     }, 500)
 
 
 
 
-    //延时函数 
+    //延时函数
     function sleep(delay) {
         return new Promise((resolve) => setTimeout(resolve, delay))
     }
@@ -39,16 +42,17 @@
         button.setAttribute('data-v-4b8b3d08', '');
         button.id = "batch-download";
         button.className = "el-button blue  el-button--medium";
-        button.style = "margin-bottom: 10px; margin-left: 16px; display: none;";
+        button.style = "margin-bottom: 10px; margin-left: 16px;";
         button.addEventListener("click", buttonDownloadAction);   //监听按钮点击事件
-        document.getElementsByClassName('row')[0].appendChild(button); //把按钮加入到 x 的子节点中
+        let temp = document.getElementsByClassName('row')[0];
+        temp.appendChild(button); //把按钮加入到 x 的子节点中
     }
 
-    function buttonDownloadAction() {
-        let userId = getUserId();
-        let groupId = getGroupId(userId);
+    async function buttonDownloadAction() {
+        let userId = await getUserId();
+        let groupId = await getGroupId(userId);
         let blobList = [];
-        for (element in groupId) {
+        for(let element in groupId){
             let blobDirt = {
                 'name': groupId[element]['leagueName'],
                 'blob': getBlob('https://zhtj.youth.cn/v1/center/tuanweiexportmembers/' + groupId[element]['leagueId'], 'GET'),
@@ -100,7 +104,7 @@
     //下载完整zip文件
     function downloadZip(blobList) {
         let zip = new JSZip();
-        for (element in blobList) {
+        for (let element in blobList) {
             zip.file(blobList[element]['name'] + '.xlsx', blobList[element]['blob']);
         }
         zip.generateAsync({ type: 'blob' }).then(function (content) {
